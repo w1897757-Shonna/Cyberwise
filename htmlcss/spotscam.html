@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spot the Scam | CyberWise Seniors</title>
+  <link rel="icon" type="image/webp" href="./images/logo.png" />
+  <link rel="stylesheet" href="./allpages.css" />
+  <script defer src="./allpage.js"></script>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <div class="bg-blur" aria-hidden="true"></div>
+
+  <main class="app">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" aria-label="Primary navigation">
+      <div class="side-top">
+        <div class="brand">
+          <img src="./images/logo.png" alt="CyberWise Seniors Logo" class="logo"
+               onerror="this.style.display='none';" />
+          <div class="brand-text">
+            <h1>CyberWise</h1>
+            <p>Seniors</p>
+          </div>
+        </div>
+
+        <div class="user-chip">
+          <div class="avatar" aria-hidden="true">👤</div>
+          <div>
+            <div class="user-name" id="userNameSide">User</div>
+            <div class="user-sub muted">Stay safe online</div>
+          </div>
+        </div>
+      </div>
+
+      <nav class="nav" aria-label="Pages">
+        <a class="nav-link" href="dashboard.html">🏠 Dashboard</a>
+        <a class="nav-link" href="newalerts.html">🚩 Scam News Alerts</a>
+        <a class="nav-link" href="modules.html">📘 Modules</a>
+        <a class="nav-link" href="quizzes.html">🧠 Quizzes</a>
+        <a class="nav-link active" href="spotscam.html">🕵️ Spot the Scam</a>
+        <a class="nav-link" href="spotaigame.html">🤖 Spot the AI Game</a>
+        <a class="nav-link" href="chatbot.html">💬 Your AI Friend</a>
+        <a class="nav-link" href="progress.html">📊 Progress</a>
+        <a class="nav-link" href="profile.html">👤 Profile</a>
+      </nav>
+
+      <div class="side-bottom">
+        <a class="nav-link logout" href="login.html">🚪 Log out</a>
+      </div>
+    </aside>
+
+    <!-- MAIN AREA -->
+    <section class="main-area" id="main">
+
+      <!-- TOP BAR -->
+      <header class="topbar" role="banner">
+        <div class="welcome">
+          <h2 class="hello">Spot the Scam</h2>
+          <p class="muted">Work through 18 real-life scenarios and see how many scams you can identify.</p>
+        </div>
+        <div class="top-actions" aria-label="Accessibility and settings">
+          <div class="a11y-group" role="group" aria-label="Text size controls">
+            <button class="tool-btn" id="decreaseText" type="button">A−</button>
+            <button class="tool-btn" id="increaseText" type="button">A+</button>
+            <button class="tool-btn" id="toggleTheme" type="button" aria-pressed="false">🌙 Dark mode</button>
+        </div>
+      </header>
+ 
+      <!-- STATS BAR -->
+      <div class="news-card" style="padding: 18px 22px; margin-bottom: 16px;">
+        <div style="display: flex; gap: 24px; flex-wrap: wrap; align-items: center; margin-bottom: 12px;">
+          <div>
+            <span class="muted" style="font-size: 0.9rem;">Question</span>
+            <div style="font-weight: 800; font-size: 1.1rem;">
+              <span id="questionNumber">1</span> / <span id="totalQuestions">18</span>
+            </div>
+          </div>
+          <div>
+            <span class="muted" style="font-size: 0.9rem;">Score</span>
+            <div style="font-weight: 800; font-size: 1.1rem;"><span id="score">0</span></div>
+          </div>
+          <div>
+            <span class="muted" style="font-size: 0.9rem;">Category</span>
+            <div style="font-weight: 800; font-size: 1.1rem;" id="categoryName">—</div>
+          </div>
+        </div>
+        <div class="progress-wrap" style="margin-bottom: 0;">
+          <div class="progress-bar" id="progressBar" style="width: 0%;"></div>
+        </div>
+      </div>
+
+      <!-- QUIZ CARD -->
+      <div class="news-card" id="quizCard" style="padding: 24px;">
+        <div style="display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;">
+          <span class="badge--tag" id="questionType">—</span>
+          <span class="badge--tag" id="questionCategory">—</span>
+        </div>
+
+        <div class="question-text" id="questionText"></div>
+
+        <div id="optionsContainer" class="options"></div>
+
+        <div id="feedbackBox" style="display:none; margin-top: 14px; padding: 14px 18px; border-radius: 16px; font-weight: 600;"></div>
+
+        <div style="margin-top: 20px;">
+          <button class="main-btn" id="nextBtn" disabled>Next Question</button>
+        </div>
+      </div>
+
+      <!-- RESULT CARD -->
+      <div class="news-card" id="resultCard" style="display: none; padding: 32px; text-align: center;">
+        <h2 style="font-size: 2rem; margin-bottom: 12px;">🎉 Quiz Complete!</h2>
+        <p id="finalScoreText" style="font-size: 1.2rem; font-weight: 700; margin-bottom: 10px;"></p>
+        <p id="finalAdviceText" style="color: var(--muted); margin-bottom: 24px;"></p>
+        <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+          <button class="main-btn" onclick="restartQuiz()">Restart Quiz</button>
+          <button class="main-btn secondary" onclick="location.href='dashboard.html'">Dashboard</button>
+        </div>
+      </div>
+
+      <footer class="footer">
+        <p class="muted">CyberWise Seniors — safe, consent-based learning and scam awareness support.</p>
+      </footer>
+
+    </section>
+  </main>
+
+  <script>
+    const API_URL = "https://cyberwise-backend.onrender.com";
+    const quizData = [
+      { category:"Phone Scams", type:"True / False", question:"You receive a call from someone claiming to be from your bank. They say your account is at risk and ask you to confirm your PIN and full password immediately. This is likely a scam.", options:["True","False"], answer:"True", correctFeedback:"Correct. Real banks will not ask for your full PIN or password over the phone.", wrongFeedback:"Incorrect. This is a scam because criminals often pretend to be banks and pressure people into giving security details." },
+      { category:"Phone Scams", type:"Multiple Choice", question:"A caller says you have won a holiday prize, but first you must pay a processing fee today. What is the best answer?", options:["A. It must be genuine if they sound professional","B. It is likely a scam","C. Pay first to avoid missing the prize"], answer:"B. It is likely a scam", correctFeedback:"Correct. Genuine prizes do not require surprise fees before you can claim them.", wrongFeedback:"Incorrect. Requests for upfront payment to release a prize are a classic scam warning sign." },
+      { category:"Text Message Scams", type:"True / False", question:"You get a text saying: 'Your parcel delivery has failed. Click this link now to avoid return.' This could be a scam text.", options:["True","False"], answer:"True", correctFeedback:"Correct. Delivery scam texts often use urgent language and suspicious links to steal details.", wrongFeedback:"Incorrect. Fake parcel messages are one of the most common text scams." },
+      { category:"Text Message Scams", type:"Multiple Choice", question:"You receive a message: 'Hi Mum, I lost my phone. This is my new number. Can you send me money urgently?' What should you assume first?", options:["A. It is definitely your child","B. It may be a scam and should be verified another way","C. Send money straight away"], answer:"B. It may be a scam and should be verified another way", correctFeedback:"Correct. Always verify using a known number before sending money.", wrongFeedback:"Incorrect. This is a common impersonation scam designed to create panic and urgency." },
+      { category:"Relationship Scams", type:"True / False", question:"Someone you met online quickly says they love you, avoids meeting in person, and asks for money for an emergency. This is likely a romance scam.", options:["True","False"], answer:"True", correctFeedback:"Correct. Fast emotional attachment and requests for money are major warning signs.", wrongFeedback:"Incorrect. This pattern is very common in relationship scams." },
+      { category:"Relationship Scams", type:"Multiple Choice", question:"An online partner refuses video calls again and again, but keeps asking for gift cards. What is the best answer?", options:["A. It is normal and harmless","B. Send a small amount to prove trust","C. It is a strong scam warning sign"], answer:"C. It is a strong scam warning sign", correctFeedback:"Correct. Refusing to verify identity and asking for money or gift cards is highly suspicious.", wrongFeedback:"Incorrect. This behaviour strongly suggests a scammer hiding their identity." },
+      { category:"Identity Theft Scams", type:"True / False", question:"You get an email asking you to confirm your date of birth, address, and national insurance number through a link. This may be identity theft.", options:["True","False"], answer:"True", correctFeedback:"Correct. Scammers try to collect personal information to steal your identity.", wrongFeedback:"Incorrect. Requests for sensitive personal details through unexpected messages are dangerous." },
+      { category:"Identity Theft Scams", type:"Multiple Choice", question:"A website asks you to upload a passport scan, but the web address looks slightly different from the official company website. What is the safest answer?", options:["A. Upload it anyway if the page looks professional","B. Do not upload it because the site may be fake","C. Email your passport instead"], answer:"B. Do not upload it because the site may be fake", correctFeedback:"Correct. Small changes in a web address are a common trick used in fake websites.", wrongFeedback:"Incorrect. A suspicious website address is a major phishing and identity theft warning sign." },
+      { category:"Doorstep Scams", type:"True / False", question:"Someone knocks at your door saying your roof needs urgent repairs and asks for cash upfront. This could be a doorstep scam.", options:["True","False"], answer:"True", correctFeedback:"Correct. Pressure, surprise visits, and demands for cash are serious warning signs.", wrongFeedback:"Incorrect. Genuine traders do not usually pressure you into immediate cash payments at the door." },
+      { category:"Doorstep Scams", type:"Multiple Choice", question:"A person says they are from the council but cannot show proper identification and tries to enter your home quickly. What should you do?", options:["A. Let them in to avoid being rude","B. Give them bank details first","C. Refuse entry and verify with the organisation directly"], answer:"C. Refuse entry and verify with the organisation directly", correctFeedback:"Correct. Always verify identity before allowing anyone into your home.", wrongFeedback:"Incorrect. Never let unknown people in without proper identification and independent verification." },
+      { category:"Mail Scams", type:"True / False", question:"You receive a letter marked 'Final Notice' demanding payment to a company you do not recognise. This might be a scam.", options:["True","False"], answer:"True", correctFeedback:"Correct. Scammers often use fear and official-looking letters to pressure people into paying.", wrongFeedback:"Incorrect. A threatening letter from an unknown company should be checked carefully before any action." },
+      { category:"Mail Scams", type:"Multiple Choice", question:"A letter says you have won a large prize but asks for your bank details to transfer it. What is the best answer?", options:["A. It is safe because it arrived by post","B. It is likely a scam","C. Give details to claim it faster"], answer:"B. It is likely a scam", correctFeedback:"Correct. Scam mail can look official, but asking for bank details for a surprise prize is suspicious.", wrongFeedback:"Incorrect. Postal scams often use fake winnings to steal money or personal information." },
+      { category:"Business Email Scams", type:"True / False", question:"An email appears to come from your manager asking you to urgently transfer money to a new account. This may be a business email scam.", options:["True","False"], answer:"True", correctFeedback:"Correct. Criminals often impersonate bosses or suppliers to trick staff into sending money.", wrongFeedback:"Incorrect. Urgent payment changes by email alone are a major scam warning sign." },
+      { category:"Business Email Scams", type:"Multiple Choice", question:"A supplier invoice arrives with different bank details from previous invoices. What should you do first?", options:["A. Verify the change using a trusted phone number","B. Pay immediately to avoid delay","C. Reply only to the email and ask if it is real"], answer:"A. Verify the change using a trusted phone number", correctFeedback:"Correct. Always verify payment detail changes through a trusted contact method.", wrongFeedback:"Incorrect. Email alone is not enough to verify bank detail changes." },
+      { category:"Investment & Pension Scams", type:"True / False", question:"Someone promises guaranteed high returns with little or no risk if you invest today. This is likely a scam.", options:["True","False"], answer:"True", correctFeedback:"Correct. Guaranteed high returns with no risk are a classic investment scam sign.", wrongFeedback:"Incorrect. Genuine investments always carry some level of risk." },
+      { category:"Investment & Pension Scams", type:"Multiple Choice", question:"You are told to move your pension immediately or you will miss a one-time opportunity. What is the safest answer?", options:["A. Act quickly before the offer disappears","B. Transfer part of it first","C. Treat pressure and urgency as a warning sign"], answer:"C. Treat pressure and urgency as a warning sign", correctFeedback:"Correct. Pension scammers often use pressure to stop people from checking properly.", wrongFeedback:"Incorrect. You should never rush pension decisions because of pressure tactics." },
+      { category:"Buying and Selling Scams", type:"True / False", question:"An item is advertised online for a very low price and the seller asks you to pay outside the platform. This is a scam warning sign.", options:["True","False"], answer:"True", correctFeedback:"Correct. Scammers often move payments away from trusted platforms to avoid protection checks.", wrongFeedback:"Incorrect. Very low prices and requests to pay outside the platform are major red flags." },
+      { category:"Buying and Selling Scams", type:"Multiple Choice", question:"A buyer sends you more money than agreed and asks you to refund the difference. What is the best answer?", options:["A. Refund the extra money immediately","B. It may be an overpayment scam","C. Send them your bank details for convenience"], answer:"B. It may be an overpayment scam", correctFeedback:"Correct. Overpayment scams are designed to trick sellers into sending real money back.", wrongFeedback:"Incorrect. This is a common scam where the original payment may later be reversed." }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+    let answered = false;
+
+    const questionNumber   = document.getElementById("questionNumber");
+    const totalQuestions   = document.getElementById("totalQuestions");
+    const scoreEl          = document.getElementById("score");
+    const categoryName     = document.getElementById("categoryName");
+    const questionType     = document.getElementById("questionType");
+    const questionCategory = document.getElementById("questionCategory");
+    const questionText     = document.getElementById("questionText");
+    const optionsContainer = document.getElementById("optionsContainer");
+    const feedbackBox      = document.getElementById("feedbackBox");
+    const nextBtn          = document.getElementById("nextBtn");
+    const progressBar      = document.getElementById("progressBar");
+    const quizCard         = document.getElementById("quizCard");
+    const resultCard       = document.getElementById("resultCard");
+    const finalScoreText   = document.getElementById("finalScoreText");
+    const finalAdviceText  = document.getElementById("finalAdviceText");
+
+    totalQuestions.textContent = quizData.length;
+
+    function loadQuestion() {
+      answered = false;
+      nextBtn.disabled = true;
+      feedbackBox.style.display = "none";
+      feedbackBox.textContent = "";
+
+      const q = quizData[currentQuestion];
+
+      questionNumber.textContent   = currentQuestion + 1;
+      scoreEl.textContent          = score;
+      categoryName.textContent     = q.category;
+      questionType.textContent     = q.type;
+      questionCategory.textContent = q.category;
+      questionText.textContent     = q.question;
+
+      progressBar.style.width = (currentQuestion / quizData.length * 100) + "%";
+
+      optionsContainer.innerHTML = "";
+      q.options.forEach(option => {
+        const div = document.createElement("div");
+        div.className = "option";
+        div.innerHTML = `<input type="radio" name="answer" value="${option}"><label class="option-text">${option}</label>`;
+        div.addEventListener("click", () => selectAnswer(div, option));
+        optionsContainer.appendChild(div);
+      });
+    }
+
+    function selectAnswer(clickedDiv, selectedOption) {
+      if (answered) return;
+      answered = true;
+
+      const q = quizData[currentQuestion];
+
+      document.querySelectorAll(".option").forEach(div => {
+        div.classList.add("disabled");
+        const val = div.querySelector("input").value;
+        if (val === q.answer) div.classList.add("correct");
+      });
+
+      if (selectedOption === q.answer) {
+        score++;
+        scoreEl.textContent = score;
+        clickedDiv.classList.add("correct");
+        feedbackBox.style.display = "block";
+        feedbackBox.style.background = "rgba(23,138,71,0.12)";
+        feedbackBox.style.color = "#0d5c30";
+        feedbackBox.style.border = "1px solid #178a47";
+        feedbackBox.textContent = q.correctFeedback;
+      } else {
+        clickedDiv.classList.add("wrong");
+        feedbackBox.style.display = "block";
+        feedbackBox.style.background = "rgba(192,57,43,0.12)";
+        feedbackBox.style.color = "#7b0d0d";
+        feedbackBox.style.border = "1px solid #c0392b";
+        feedbackBox.textContent = q.wrongFeedback;
+      }
+
+      nextBtn.disabled = false;
+    }
+
+    nextBtn.addEventListener("click", () => {
+      currentQuestion++;
+      if (currentQuestion < quizData.length) {
+        loadQuestion();
+      } else {
+        showResults();
+      }
+    });
+
+    function showResults() {
+      quizCard.style.display = "none";
+      resultCard.style.display = "block";
+      progressBar.style.width = "100%";
+      scoreEl.textContent = score;
+      finalScoreText.textContent = `You scored ${score} out of ${quizData.length}.`;
+
+      if (score >= 16) {
+        finalAdviceText.textContent = "Excellent work. You are very confident at spotting scam warning signs.";
+      } else if (score >= 12) {
+        finalAdviceText.textContent = "Well done. You spotted many scams correctly — keep checking for urgency, suspicious links, and requests for money.";
+      } else if (score >= 8) {
+        finalAdviceText.textContent = "Good effort. Keep practising and remember to stop, think, and verify before acting.";
+      } else {
+        finalAdviceText.textContent = "Scams can be very convincing. Review the warning signs and remember never to rush into sending money or personal details.";
+      }
+
+      const token = localStorage.getItem("cws_token");
+      if (token) {
+        fetch (`${API_URL}/api/progress`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({ quizCompleted: true, quizScore: score })
+        }).catch(err => console.error("Could not save quiz score:", err));
+      }
+    }
+    loadQuestion();
+  </script>
+
+</body>
+</html>
