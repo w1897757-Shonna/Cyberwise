@@ -1,4 +1,5 @@
 // Pages that don't need a login token — everyone else gets sent to the login page
+const API_URL = "http://localhost:5001";
 const PUBLIC_PAGES = ["login.html", "register.html", "forgotpwd.html", "Login.html"];
 const currentPage = window.location.pathname.split("/").pop();
 
@@ -202,7 +203,7 @@ async function saveProgress(updates) {
   if (!token) return;
 
   try {
-    await fetch("http://localhost:5001/api/progress", {
+    await fetch(`${API_URL}/api/progress`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -285,7 +286,7 @@ async function initProgressView() {
   const token = localStorage.getItem("cws_token");
   if (token) {
     try {
-      const res = await fetch("http://localhost:5001/api/progress", {
+      const res = await fetch(`${API_URL}/api/progress`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.ok) {
@@ -476,7 +477,7 @@ function initOptionalButtons() {
       const token = localStorage.getItem("cws_token");
       if (token) {
         try {
-          await fetch("http://localhost:5001/api/progress", {
+          await fetch(`${API_URL}/api/progress`, {
             method: "PUT",
             headers: {
               "Content-Type": "application/json",

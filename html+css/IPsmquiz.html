@@ -21,7 +21,7 @@
             <h1>CyberWise Seniors</h1>
             <p>Stay safe online</p>
           </div>
-        </div>
+        </div> 
         <div class="tools">
           <button class="tool-btn" id="decreaseText" type="button">A−</button>
           <button class="tool-btn" id="increaseText" type="button">A+</button>
@@ -70,6 +70,7 @@
   </div>
 
   <script>
+    const API_URL = "http://localhost:5001";
     const quizData = [
       {
         question: "What is an investment or pension scam?",
@@ -203,7 +204,7 @@
       const token = localStorage.getItem("cws_token");
       if (token) {
         try {
-          await fetch("http://localhost:5001/api/progress", {
+          await fetch(`${API_URL}/api/progress`, {
             method: "PUT",
             headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
             body: JSON.stringify({ investment_quiz: true, quizScore: score })

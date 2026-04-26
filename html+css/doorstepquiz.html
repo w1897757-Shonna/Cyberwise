@@ -27,7 +27,7 @@
           <button class="tool-btn" id="toggleTheme" type="button" aria-pressed="false">🌙 Dark mode</button>
           <button class="tool-btn" type="button" onclick="window.location.href='quizzes.html'">Quizzes</button>
         </div>
-      </header>
+      </header> 
       <div class="header-row">
         <div>
           <div class="title">Doorstep Scams Quiz</div>
@@ -83,9 +83,10 @@
       </div>
     </section>
 
-  </div><!-- end .page -->
+  </div>
 
   <script>
+    const API_URL = "http://localhost:5001";
     const quizData = [
       {
         question: "What is a doorstep scam?",
@@ -268,7 +269,7 @@
       const token = localStorage.getItem("cws_token");
       if (token) {
         try {
-          await fetch("http://localhost:5001/api/progress", {
+          await fetch(`${API_URL}/api/progress`, {
             method: "PUT",
             headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
             body: JSON.stringify({ doorstep_quiz: true, quizScore: score })

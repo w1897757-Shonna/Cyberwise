@@ -10,7 +10,7 @@
 </head>
 <body>
   <div class="bg-blur"></div>
-
+ 
   <div class="page">
 
     <section class="hero-card">
@@ -97,6 +97,7 @@
   </div>
 
   <script>
+    const API_URL = "http://localhost:5001";
     const quizData = [
       {
         question: "What is a business email scam?",
@@ -277,7 +278,7 @@
   const token = localStorage.getItem("cws_token");
   if (token) {
     try {
-      await fetch("http://localhost:5001/api/progress", {
+      await fetch(`${API_URL}/api/progress`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -313,7 +314,7 @@
       const token = localStorage.getItem("cws_token");
       if (token) {
         try {
-          await fetch("http://localhost:5001/api/progress", {
+          await fetch(`${API_URL}/api/progress`, {
           method: "PUT",
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
           body: JSON.stringify({ business_quiz: true, quizScore: score })
