@@ -4,7 +4,7 @@ const dotenv = require("dotenv");
 const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
-const mysql = require("mysql2/promise");
+const { Pool } = require("pg");
 const OpenAI = require("openai");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -17,13 +17,10 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-// Connect to the MySQL database using a connection pool
-// so  can handle multiple requests at the same time
-const db = mysql.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
+// Connect to PostgreSQL database using a connection pool
+const db = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false }
 });
 
 // Make sure the uploads folder exists before we try to save anything into it
@@ -82,23 +79,23 @@ app.post("/api/auth/register", async (req, res) => {
     if (password.length < 6)
       return res.status(400).json({ message: "Password must be at least 6 characters." });
 
-    const [existing] = await db.query("SELECT id FROM users WHERE email = ?", [email]);
-    if (existing.length > 0)
+    const existing = await db.query("SELECT id FROM users WHERE email = $1", [email]);
+    if (existing.rows.length > 0)
       return res.status(400).json({ message: "An account with this email already exists." });
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const [result] = await db.query(
-      "INSERT INTO users (name, email, password) VALUES (?, ?, ?)",
+    const result = await db.query(
+      "INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id",
       [name, email, hashedPassword]
     );
 
-    const userId = result.insertId;
+    const userId = result.rows[0].id;
     await db.query(
-      "INSERT INTO profiles (user_id, name, email, joined) VALUES (?, ?, ?, ?)",
+      "INSERT INTO profiles (user_id, name, email, joined) VALUES ($1, $2, $3, $4)",
       [userId, name, email, new Date().toISOString().split('T')[0]]
     );
-    await db.query("INSERT INTO progress (user_id) VALUES (?)", [userId]);
+    await db.query("INSERT INTO progress (user_id) VALUES ($1)", [userId]);
 
     const token = jwt.sign({ userId }, JWT_SECRET, { expiresIn: "7d" });
 
@@ -108,6 +105,7 @@ app.post("/api/auth/register", async (req, res) => {
       user: { id: userId, name, email }
     });
   } catch (error) {
+    console.error("Register error:", error);
     res.status(500).json({ message: "Registration failed." });
   }
 });
@@ -120,8 +118,8 @@ app.post("/api/auth/login", async (req, res) => {
     if (!email || !password)
       return res.status(400).json({ message: "Email and password are required." });
 
-    const [rows] = await db.query("SELECT * FROM users WHERE email = ?", [email]);
-    const user = rows[0];
+    const result = await db.query("SELECT * FROM users WHERE email = $1", [email]);
+    const user = result.rows[0];
 
     if (!user)
       return res.status(400).json({ message: "No account found with this email." });
@@ -146,12 +144,12 @@ app.post("/api/auth/login", async (req, res) => {
 // Returns the basic details of whoever is currently logged in
 app.get("/api/auth/me", authMiddleware, async (req, res) => {
   try {
-    const [rows] = await db.query(
-      "SELECT id, name, email, created_at FROM users WHERE id = ?",
+    const result = await db.query(
+      "SELECT id, name, email, created_at FROM users WHERE id = $1",
       [req.userId]
     );
-    if (!rows[0]) return res.status(404).json({ message: "User not found." });
-    res.json(rows[0]);
+    if (!result.rows[0]) return res.status(404).json({ message: "User not found." });
+    res.json(result.rows[0]);
   } catch {
     res.status(500).json({ message: "Failed to get user." });
   }
@@ -163,7 +161,6 @@ app.post("/api/chat", async (req, res) => {
     const { message } = req.body;
     if (!message) return res.status(400).json({ reply: "No message sent." });
 
-    // Try to get the user ID from the token if one was sent — it's optional here
     let userId = null;
     const authHeader = req.headers.authorization;
     if (authHeader && authHeader.startsWith("Bearer ")) {
@@ -209,20 +206,19 @@ Just write naturally, like a friendly person talking to them.
 
     const reply = response.choices[0].message.content || "Sorry, I could not generate a response.";
 
-    // Pull out risk/category just for logging — these are never shown to the user
     const riskMatch = reply.match(/Risk Level:\s*(low|medium|high)/i);
     const categoryMatch = reply.match(/Category:\s*(.+)/i);
     const riskLevel = riskMatch ? riskMatch[1].toLowerCase() : "unknown";
     const category = categoryMatch ? categoryMatch[1].split("\n")[0].trim() : "general";
 
-    const [result] = await db.query(
-      "INSERT INTO reports (user_id, type, user_input, ai_reply, risk_level, category) VALUES (?, ?, ?, ?, ?, ?)",
+    const result = await db.query(
+      "INSERT INTO reports (user_id, type, user_input, ai_reply, risk_level, category) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id",
       [userId, "chat", message, reply, riskLevel, category]
     );
 
     res.json({
       reply,
-      savedReport: { id: result.insertId, userId, type: "chat", riskLevel, category }
+      savedReport: { id: result.rows[0].id, userId, type: "chat", riskLevel, category }
     });
   } catch (error) {
     console.error("Chat error:", error.message);
@@ -235,7 +231,6 @@ app.post("/api/analyze-image", upload.single("image"), async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ reply: "No image uploaded." });
 
-    // Token is optional here too — guests can still use image analysis
     let userId = null;
     const authHeader = req.headers.authorization;
     if (authHeader && authHeader.startsWith("Bearer ")) {
@@ -287,15 +282,15 @@ Look at the uploaded image and tell the person in simple, plain English whether 
     const riskLevel = riskMatch ? riskMatch[1].toLowerCase() : "unknown";
     const category = categoryMatch ? categoryMatch[1].split("\n")[0].trim() : "general";
 
-    const [result] = await db.query(
-      "INSERT INTO reports (user_id, type, image_name, ai_reply, risk_level, category) VALUES (?, ?, ?, ?, ?, ?)",
+    const result = await db.query(
+      "INSERT INTO reports (user_id, type, image_name, ai_reply, risk_level, category) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id",
       [userId, "image", req.file.originalname, reply, riskLevel, category]
     );
 
     safeDelete(filePath);
     res.json({
       reply,
-      savedReport: { id: result.insertId, userId, type: "image", riskLevel, category }
+      savedReport: { id: result.rows[0].id, userId, type: "image", riskLevel, category }
     });
   } catch (error) {
     console.error("Image analysis error:", error.message);
@@ -307,9 +302,9 @@ Look at the uploaded image and tell the person in simple, plain English whether 
 // Fetches the profile for whoever is logged in
 app.get("/api/profile", authMiddleware, async (req, res) => {
   try {
-    const [rows] = await db.query("SELECT * FROM profiles WHERE user_id = ?", [req.userId]);
-    if (!rows[0]) return res.status(404).json({ message: "Profile not found." });
-    res.json(rows[0]);
+    const result = await db.query("SELECT * FROM profiles WHERE user_id = $1", [req.userId]);
+    if (!result.rows[0]) return res.status(404).json({ message: "Profile not found." });
+    res.json(result.rows[0]);
   } catch {
     res.status(500).json({ message: "Failed to fetch profile." });
   }
@@ -320,11 +315,11 @@ app.put("/api/profile", authMiddleware, async (req, res) => {
   try {
     const { name, email, joined } = req.body;
     await db.query(
-      "UPDATE profiles SET name = ?, email = ?, joined = ? WHERE user_id = ?",
+      "UPDATE profiles SET name = $1, email = $2, joined = $3 WHERE user_id = $4",
       [name, email, joined, req.userId]
     );
-    const [rows] = await db.query("SELECT * FROM profiles WHERE user_id = ?", [req.userId]);
-    res.json(rows[0]);
+    const result = await db.query("SELECT * FROM profiles WHERE user_id = $1", [req.userId]);
+    res.json(result.rows[0]);
   } catch {
     res.status(500).json({ message: "Failed to update profile." });
   }
@@ -333,9 +328,9 @@ app.put("/api/profile", authMiddleware, async (req, res) => {
 // Returns the current progress record for the logged-in user
 app.get("/api/progress", authMiddleware, async (req, res) => {
   try {
-    const [rows] = await db.query("SELECT * FROM progress WHERE user_id = ?", [req.userId]);
-    if (!rows[0]) return res.status(404).json({ message: "Progress not found." });
-    res.json(rows[0]);
+    const result = await db.query("SELECT * FROM progress WHERE user_id = $1", [req.userId]);
+    if (!result.rows[0]) return res.status(404).json({ message: "Progress not found." });
+    res.json(result.rows[0]);
   } catch {
     res.status(500).json({ message: "Failed to fetch progress." });
   }
@@ -354,30 +349,30 @@ app.put("/api/progress", authMiddleware, async (req, res) => {
 
     await db.query(
       `UPDATE progress SET
-        phone_scams = COALESCE(?, phone_scams),
-        doorstep_scams = COALESCE(?, doorstep_scams),
-        relationship_scams = COALESCE(?, relationship_scams),
-        shopping_scams = COALESCE(?, shopping_scams),
-        quiz_completed = COALESCE(?, quiz_completed),
-        quiz_score = COALESCE(?, quiz_score),
-        phone_module = COALESCE(?, phone_module),
-        doorstep_module = COALESCE(?, doorstep_module),
-        relationship_module = COALESCE(?, relationship_module),
-        mail_module = COALESCE(?, mail_module),
-        identity_module = COALESCE(?, identity_module),
-        investment_module = COALESCE(?, investment_module),
-        business_module = COALESCE(?, business_module),
-        textmsg_module = COALESCE(?, textmsg_module),
-        buying_module = COALESCE(?, buying_module),
-        phone_quiz = COALESCE(?, phone_quiz),
-        doorstep_quiz = COALESCE(?, doorstep_quiz),
-        relationship_quiz = COALESCE(?, relationship_quiz),
-        mail_quiz = COALESCE(?, mail_quiz),
-        identity_quiz = COALESCE(?, identity_quiz),
-        business_quiz = COALESCE(?, business_quiz),
-        textmsg_quiz = COALESCE(?, textmsg_quiz),
-        buying_quiz = COALESCE(?, buying_quiz)
-      WHERE user_id = ?`,
+        phone_scams = COALESCE($1, phone_scams),
+        doorstep_scams = COALESCE($2, doorstep_scams),
+        relationship_scams = COALESCE($3, relationship_scams),
+        shopping_scams = COALESCE($4, shopping_scams),
+        quiz_completed = COALESCE($5, quiz_completed),
+        quiz_score = COALESCE($6, quiz_score),
+        phone_module = COALESCE($7, phone_module),
+        doorstep_module = COALESCE($8, doorstep_module),
+        relationship_module = COALESCE($9, relationship_module),
+        mail_module = COALESCE($10, mail_module),
+        identity_module = COALESCE($11, identity_module),
+        investment_module = COALESCE($12, investment_module),
+        business_module = COALESCE($13, business_module),
+        textmsg_module = COALESCE($14, textmsg_module),
+        buying_module = COALESCE($15, buying_module),
+        phone_quiz = COALESCE($16, phone_quiz),
+        doorstep_quiz = COALESCE($17, doorstep_quiz),
+        relationship_quiz = COALESCE($18, relationship_quiz),
+        mail_quiz = COALESCE($19, mail_quiz),
+        identity_quiz = COALESCE($20, identity_quiz),
+        business_quiz = COALESCE($21, business_quiz),
+        textmsg_quiz = COALESCE($22, textmsg_quiz),
+        buying_quiz = COALESCE($23, buying_quiz)
+      WHERE user_id = $24`,
       [
         phoneScams, doorstepScams, relationshipScams, shoppingScams, quizCompleted, quizScore,
         phone_module, doorstep_module, relationship_module, mail_module, identity_module,
@@ -388,8 +383,8 @@ app.put("/api/progress", authMiddleware, async (req, res) => {
       ]
     );
 
-    const [rows] = await db.query("SELECT * FROM progress WHERE user_id = ?", [req.userId]);
-    res.json(rows[0]);
+    const result = await db.query("SELECT * FROM progress WHERE user_id = $1", [req.userId]);
+    res.json(result.rows[0]);
   } catch (err) {
     console.error("Progress update error:", err);
     res.status(500).json({ message: "Failed to update progress." });
@@ -418,12 +413,12 @@ app.post("/api/auth/forgot-password", async (req, res) => {
     return res.status(400).json({ message: "Password must be at least 6 characters." });
 
   try {
-    const [rows] = await db.query("SELECT * FROM users WHERE email = ?", [email]);
-    if (!rows[0])
+    const result = await db.query("SELECT * FROM users WHERE email = $1", [email]);
+    if (!result.rows[0])
       return res.status(404).json({ message: "No account found with this email." });
 
     const hashed = await bcrypt.hash(newPassword, 10);
-    await db.query("UPDATE users SET password = ? WHERE email = ?", [hashed, email]);
+    await db.query("UPDATE users SET password = $1 WHERE email = $2", [hashed, email]);
 
     res.json({ message: "Password reset successfully." });
   } catch (err) {
@@ -443,8 +438,8 @@ app.put("/api/auth/change-password", authMiddleware, async (req, res) => {
     return res.status(400).json({ message: "New password must be at least 6 characters." });
 
   try {
-    const [rows] = await db.query("SELECT * FROM users WHERE id = ?", [req.userId]);
-    const user = rows[0];
+    const result = await db.query("SELECT * FROM users WHERE id = $1", [req.userId]);
+    const user = result.rows[0];
 
     if (!user)
       return res.status(404).json({ message: "User not found." });
@@ -454,7 +449,7 @@ app.put("/api/auth/change-password", authMiddleware, async (req, res) => {
       return res.status(400).json({ message: "Current password is incorrect." });
 
     const hashed = await bcrypt.hash(newPassword, 10);
-    await db.query("UPDATE users SET password = ? WHERE id = ?", [hashed, req.userId]);
+    await db.query("UPDATE users SET password = $1 WHERE id = $2", [hashed, req.userId]);
 
     res.json({ message: "Password updated successfully." });
   } catch (err) {
