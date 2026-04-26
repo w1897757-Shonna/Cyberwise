@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" data-font="md">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quizzes | CyberWise Seniors</title>
+
+  <link rel="icon" type="image/webp" href="./images/logo.png" />
+  <link rel="stylesheet" href="./allpages.css" />
+  <script defer src="./allpage.js"></script>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <div class="bg-blur" aria-hidden="true"></div>
+
+  <main class="app">
+
+    <aside class="sidebar" aria-label="Primary navigation">
+      <div class="side-top">
+        <div class="brand">
+          <img src="./images/logo.png" alt="CyberWise Seniors Logo" class="logo"
+               onerror="this.style.display='none';" />
+          <div class="brand-text">
+            <h1>CyberWise</h1>
+            <p>Seniors</p>
+          </div>
+        </div>
+
+        <div class="user-chip">
+          <div class="avatar" aria-hidden="true">👤</div>
+          <div>
+            <div class="user-name" id="userNameSide">User</div>
+            <div class="user-sub muted">Stay safe online</div>
+          </div>
+        </div>
+      </div>
+
+      <nav class="nav" aria-label="Pages">
+        <a class="nav-link active" href="dashboard.html">🏠 Dashboard</a>
+        <a class="nav-link" href="newalerts.html">🚩 Scam News Alerts</a>
+        <a class="nav-link" href="modules.html">📘 Modules</a>
+        <a class="nav-link" href="quizzes.html">🧠 Quizzes</a>
+        <a class="nav-link" href="spotscam.html">🕵️ Spot the Scam</a>
+        <a class="nav-link" href="spotaigame.html">🤖 Spot the AI Game</a>
+        <a class="nav-link" href="chatbot.html">💬 Your AI Friend</a>
+        <a class="nav-link" href="progress.html">📊 Progress</a>
+        <a class="nav-link" href="profile.html">👤 Profile</a>
+      </nav>
+
+      <div class="side-bottom">
+        <a class="nav-link logout" href="login.html">🚪 Log out</a>
+      </div>
+    </aside>
+
+    <section class="main-area">
+
+      <header class="topbar" role="banner">
+        <div class="welcome">
+          <h2 class="hello">Test Your Knowledge with Quizzes</h2>
+        </div>
+
+        <div class="top-actions" aria-label="Accessibility and settings">
+          <div class="a11y-group" role="group" aria-label="Text size controls">
+            <button class="tool-btn" id="decreaseText" type="button">A−</button>
+            <button class="tool-btn" id="increaseText" type="button">A+</button>
+            <button class="tool-btn" id="toggleTheme" type="button" aria-pressed="false">🌙 Dark mode</button>
+        </div>
+      </header>
+
+      <main id="main" class="news-shell" tabindex="-1">
+
+        <section class="news-card" aria-labelledby="quiz-title">
+          <div class="news-head">
+            <h3 id="quiz-title">Quizzes for Every Module</h3>
+            <p class="muted">
+                Ready to try what you’ve learned? These short quizzes will help you check your knowledge and feel more confident spotting scams.
+                Take your time — every quiz helps you stay safer.
+            </p>
+          </div>
+
+          <div class="modules-grid modules-grid--tight">
+
+            <a href="phonequiz.html" class="module-card">
+              <img src="images/phone.png" alt="Phone scams quiz" loading="lazy" />
+              <span>Phone Scams Quiz</span>
+            </a>
+
+            <a href="relatioonshipquiz.html" class="module-card">
+              <img src="images/Relationships.png" alt="Relationship scams quiz" loading="lazy" />
+              <span>Relationship Scams Quiz</span>
+            </a>
+
+            <a href="doorstepquiz.html" class="module-card">
+              <img src="images/doorstep.png" alt="Doorstep scams quiz" loading="lazy" />
+              <span>Doorstep Scams Quiz</span>
+            </a>
+
+            <a href="mailsquiz.html" class="module-card">
+              <img src="images/mail.png" alt="Mail scams quiz" loading="lazy" />
+              <span>Mail Scams Quiz</span>
+            </a>
+
+            <a href="identityscamquiz.html" class="module-card">
+              <img src="images/identitytheft.png" alt="Identity theft scams quiz" loading="lazy" />
+              <span>Identity Theft Scams Quiz</span>
+            </a>
+
+            <a href="IPsmquiz.html" class="module-card">
+              <img src="images/IP.png" alt="Investment and pension scams quiz" loading="lazy" />
+              <span>Investment & Pension Scams Quiz</span>
+            </a>
+
+            <a href="becquiz.html" class="module-card">
+              <img src="images/bemscam.png" alt="Business email compromise scams quiz" loading="lazy" />
+              <span>Business Email Compromise Quiz</span>
+            </a>
+
+            <a href="textmsgquiz.html" class="module-card">
+              <img src="images/textmsg.png" alt="Text messages scams quiz" loading="lazy" />
+              <span>Text Messages Scams Quiz</span>
+            </a>
+
+            <a href="buyingscamquiz.html" class="module-card">
+              <img src="images/buyingscam.png" alt="Buying and selling scams quiz" loading="lazy" />
+              <span>Buying and Selling Scams Quiz</span>
+            </a>
+
+          </div>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <p class="muted">CyberWise Seniors — safe, consent-based learning and scam awareness support.</p>
+      </footer>
+
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Phone Scams | CyberWise Seniors</title>
+  <link rel="icon" type="image/png" href="images/logo.png" />
+  <link rel="stylesheet" href="allpages.css" />
+</head>
+<body>
+  <div class="bg-blur"></div>
+
+  <div class="page">
+  
+    <section class="hero-card">
+      <header class="top-bar">
+        <div class="brand">
+          <img src="images/logo.png" class="logo" alt="CyberWise Seniors" onerror="this.style.display='none';">
+          <div class="brand-text">
+            <h1>CyberWise Seniors</h1>
+            <p>Stay safe online</p>
+          </div>
+        </div>
+
+        <div class="tools">
+          <button class="tool-btn" id="decreaseText" type="button">A−</button>
+          <button class="tool-btn" id="increaseText" type="button">A+</button>
+          <button class="tool-btn" id="toggleTheme" type="button" aria-pressed="false">🌙 Dark mode</button>
+          <button class="tool-btn" type="button" onclick="location.href='dashboard.html'">Dashboard</button>
+        </div>
+      </header>
+
+      <div class="header-row">
+        <div>
+          <div class="title">Phone Scams</div>
+          <div class="subtitle">
+            Be wary of unexpected calls or texts. You can always hang up if someone makes you uncomfortable.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <main class="grid">
+      <section class="card">
+        <h2>What to watch out for</h2>
+        <ul>
+          <li>Calls “from your bank” or “the police” about fraud asking for your PIN or telling you to give your card to a courier.</li>
+          <li>“Fraud squad” calls asking you to help with an investigation.</li>
+          <li>Tech-support calls saying your device has a virus and asking you to download software (spyware).</li>
+          <li>Cold calls/texts offering pension or debt products/services.</li>
+          <li>Calls about Council Tax band/rebates out of the blue.</li>
+          <li>Calls asking you to pay to renew TPS (TPS is free).</li>
+          <li>Texts with links to “fix your account” or “track a parcel”.</li>
+          <li>Texts from a “family member” needing money urgently (new number story).</li>
+        </ul>
+
+        <h2 style="margin-top:14px;">What to do</h2>
+        <ul>
+          <li><strong>Say no:</strong> genuine organisations won’t ask for your PIN or say you must act immediately.</li>
+          <li><strong>Report texts:</strong> forward to <strong>7726</strong> (free) to help your provider flag scam messages.</li>
+          <li><strong>Check the line:</strong> scammers can keep the line open — use another phone, call someone you know first, or wait 10–15 minutes.</li>
+          <li><strong>Use voicemail/answerphone:</strong> screen calls.</li>
+          <li><strong>Caller ID:</strong> helpful, but scammers can appear “legitimate”.</li>
+          <li><strong>Try call blocking:</strong> built-in features or a call blocker; some councils provide them.</li>
+          <li><strong>Cut cold calls:</strong> join the free TPS (mobile too: text “TPS” + your email to 85095).</li>
+          <li><strong>Avoid links:</strong> don’t click — contact the company via its official site/number.</li>
+        </ul>
+        <!-- AI Chatbox tip -->
+        <div class="scam-card" style="background: linear-gradient(135deg, rgba(255,240,248,0.98), rgba(255,248,252,0.98)); border: 1.5px solid rgba(232,160,188,0.5);">
+          <div style="display:flex; align-items:flex-start; gap:14px;">
+            <div style="font-size:1.8rem; flex-shrink:0; margin-top:2px;">🤖</div>
+            <div>
+              <h3 style="margin-bottom:8px;">Not sure if a link or email is safe?</h3>
+              <p style="color: var(--muted); line-height:1.7; margin-bottom:14px;">
+                If you find a suspicious link or receive an email you are not sure about, do not worry. You can ask your <strong>CyberWise AI Assistant</strong> to check it for you. Just paste the link or describe the email in the chatbox and it will give you a simple, friendly answer — no confusing technical words, no stress.
+              </p>
+              <a href="chatbot.html" style="display:inline-flex; align-items:center; gap:8px; background:#1d2430; color:#fff; padding:12px 20px; border-radius:14px; font-weight:700; text-decoration:none; font-size:0.95rem;">
+                💬 Ask the AI Assistant
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer-actions">
+          <a href="modules.html" class="arrow-btn" aria-label="Go back">
+            <span class="arrow-icon">&#8592;</span>
+            <span class="arrow-label">Back</span>
+          </a>
+
+          <a href="phonevideo.html" class="arrow-btn" aria-label="Go to next page">
+            <span class="arrow-icon">&#8594;</span>
+            <span class="arrow-label">Next</span>
+          </a>
+        </div>
+      </section>
+
+      <aside class="card">
+        <h2>Who to contact</h2>
+        <ul>
+          <li><strong>Action Fraud:</strong> report scams.</li>
+          <li><strong>Your bank:</strong> if worried, call <strong>159</strong> or number on your card.</li>
+          <li><strong>TPS:</strong> register to reduce cold calls (free).</li>
+          <li><strong>WhatsApp:</strong> open the chat → tap the name → “report contact”.</li>
+        </ul>
+
+        <details>
+          <summary>Extra help: call blockers</summary>
+          <p class="small">
+            Ask your landline provider about call-blocking services (normally free). Some vulnerable people can access free blockers through professionals/councils.
+          </p>
+          <button id="completePhoneModule" class="tool-btn" type="button">Mark as Complete</button>
+        </details>
+      </aside>
+    </main>
+  </div>
+
+  <script src="allpage.js"></script>
+</body>
+</html>

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en" data-font="md">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Progress | CyberWise Seniors</title>
+  <link rel="icon" type="image/webp" href="./images/logo.png" />
+  <link rel="stylesheet" href="./allpages.css" />
+
+
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <div class="bg-blur" aria-hidden="true"></div>
+
+  <main class="app">
+
+    <!-- Sidebar -->
+    <aside class="sidebar" aria-label="Primary navigation">
+      <div class="side-top">
+        <div class="brand">
+          <img src="./images/logo.png" alt="CyberWise Seniors Logo" class="logo" onerror="this.style.display='none';" />
+          <div class="brand-text">
+            <h1>CyberWise</h1>
+            <p>Seniors</p>
+          </div>
+        </div>
+        <div class="user-chip">
+          <div class="avatar" aria-hidden="true">👤</div>
+          <div>
+            <div class="user-name" id="userNameSide">User</div>
+            <div class="user-sub muted">Stay safe online</div>
+          </div>
+        </div>
+      </div>
+
+      <nav class="nav" aria-label="Pages">
+        <a class="nav-link" href="dashboard.html">🏠 Dashboard</a>
+        <a class="nav-link" href="newalerts.html">🚩 Scam News Alerts</a>
+        <a class="nav-link" href="modules.html">📘 Modules</a>
+        <a class="nav-link" href="quizzes.html">🧠 Quizzes</a>
+        <a class="nav-link" href="spotscam.html">🕵️ Spot the Scam</a>
+        <a class="nav-link" href="spotaigame.html">🤖 Spot the AI Game</a>
+        <a class="nav-link" href="chatbot.html">💬 Your AI Friend</a>
+        <a class="nav-link active" href="progress.html">📊 Progress</a>
+        <a class="nav-link" href="profile.html">👤 Profile</a>
+      </nav>
+
+      <div class="side-bottom">
+        <a class="nav-link logout" href="login.html">🚪 Log out</a>
+      </div>
+    </aside>
+
+    <!-- Main content -->
+    <section class="main-area" id="main">
+
+      <header class="topbar" role="banner">
+        <div class="welcome">
+          <h2 class="hello">Your Progress</h2>
+        </div>
+        <div class="top-actions" aria-label="Accessibility and settings">
+          <div class="a11y-group" role="group" aria-label="Text size controls">
+            <button class="tool-btn" id="decreaseText" type="button">A−</button>
+            <button class="tool-btn" id="increaseText" type="button">A+</button>
+            <button class="tool-btn" id="toggleTheme" type="button" aria-pressed="false">🌙 Dark mode</button>
+          </div>
+      </header>
+
+      <div class="progress-page">
+
+        <!-- Top summary strip -->
+        <div class="progress-top">
+          <div class="summary-box" style="grid-column: span 2;">
+            <span>Overall Progress</span>
+            <strong id="overallProgressText">0% completed</strong>
+            <div class="progress-bar-wrap">
+              <div class="progress-bar" id="overallProgressBar"></div>
+            </div>
+          </div>
+          <div class="summary-box">
+            <span>Completed</span>
+            <strong id="completedCount">0/9 Modules · 0/8 Quizzes</strong>
+          </div>
+          <div class="summary-box">
+            <span>Badges Earned</span>
+            <strong id="badgeCount">0 Earned</strong>
+          </div>
+        </div>
+
+        <!-- Modules + Quizzes side by side -->
+        <div class="progress-content">
+
+          <!-- Left: Modules -->
+          <div class="progress-col">
+            <h3>📘 Modules</h3>
+            <div id="moduleList"></div>
+          </div>
+
+          <!-- Right: Quizzes -->
+          <div class="progress-col">
+            <h3>🧠 Quizzes</h3>
+            <div id="quizList"></div>
+          </div>
+
+        </div>
+
+        <!-- Achievements -->
+        <div class="achievements-row" id="badgesContainer"></div>
+
+      </div>
+    </section>
+  </main>
+
+  <script>
+    /* Build module and quiz rows once allpage.js has populated progress */
+    document.addEventListener("DOMContentLoaded", () => {
+      /* Wait a tick for initProgressView to finish */
+      setTimeout(buildCompactProgress, 400);
+    });
+
+    function buildCompactProgress() {
+      const moduleList  = document.getElementById("moduleList");
+      const quizList    = document.getElementById("quizList");
+      const badgesEl    = document.getElementById("badgesContainer");
+
+      /* Read progress from localStorage (set by allpage.js) */
+      let progress = {};
+      try { progress = JSON.parse(localStorage.getItem("userProgress")) || {}; } catch(e) {}
+
+      const modules = [
+        { key: "phone_module",        label: "Phone Scams" },
+        { key: "doorstep_module",     label: "Doorstep Scams" },
+        { key: "relationship_module", label: "Relationship Scams" },
+        { key: "mail_module",         label: "Mail Scams" },
+        { key: "identity_module",     label: "Identity Theft" },
+        { key: "investment_module",   label: "Investment & Pension" },
+        { key: "business_module",     label: "Business Email" },
+        { key: "textmsg_module",      label: "Text Message Scams" },
+        { key: "buying_module",       label: "Buying & Selling" },
+      ];
+
+      const quizzes = [
+        { key: "phone_quiz",        label: "Phone Scams Quiz" },
+        { key: "doorstep_quiz",     label: "Doorstep Scams Quiz" },
+        { key: "relationship_quiz", label: "Relationship Scams Quiz" },
+        { key: "mail_quiz",         label: "Mail Scams Quiz" },
+        { key: "identity_quiz",     label: "Identity Theft Quiz" },
+        { key: "business_quiz",     label: "Business Email Quiz" },
+        { key: "textmsg_quiz",      label: "Text Message Quiz" },
+        { key: "buying_quiz",       label: "Buying & Selling Quiz" },
+      ];
+
+      function makeRow(label, done) {
+        return `<div class="prog-row">
+          <span>${label}</span>
+          <span class="prog-badge ${done ? 'done' : 'pending'}">${done ? '✅ Done' : '⏳ Not started'}</span>
+        </div>`;
+      }
+
+      moduleList.innerHTML = modules.map(m => makeRow(m.label, progress[m.key])).join("");
+      quizList.innerHTML   = quizzes.map(q => makeRow(q.label, progress[q.key])).join("");
+
+      const modDone  = modules.filter(m => progress[m.key]).length;
+      const quizDone = quizzes.filter(q => progress[q.key]).length;
+      const total    = modules.length + quizzes.length;
+      const done     = modDone + quizDone;
+
+      let badges = 0;
+      if (modDone  >= 1) badges++;
+      if (modDone  >= 5) badges++;
+      if (quizDone >= 4) badges++;
+      if (done === total) badges++;
+
+      badgesEl.innerHTML = [
+        { label: "🚀 Getting Started", earned: modDone  >= 1 },
+        { label: "📚 Module Master",   earned: modDone  >= 5 },
+        { label: "🛡️ Scam Spotter",   earned: quizDone >= 4 },
+        { label: "🏆 CyberWise Champion", earned: done === total },
+      ].map(b => `<div class="ach-pill ${b.earned ? 'earned' : 'locked'}">${b.label}</div>`).join("");
+    }
+  </script>
+  <script defer src="./allpage.js"></script>
+</body>
+</html>
