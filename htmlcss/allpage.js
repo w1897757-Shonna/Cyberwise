@@ -1,5 +1,5 @@
 // Pages that don't need a login token — everyone else gets sent to the login page
-const API_URL = "http://localhost:5001";
+fetch("https://your-app-name.onrender.com/api/chat")
 const PUBLIC_PAGES = ["login.html", "register.html", "forgotpwd.html", "Login.html"];
 const currentPage = window.location.pathname.split("/").pop();
 
