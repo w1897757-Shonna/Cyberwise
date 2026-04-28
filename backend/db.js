@@ -10,11 +10,4 @@ const pool = mysql.createPool({
 
 module.exports = pool;
 
-// See all users
-//mysql -u root -p chatapp -e "SELECT id, name, email, created_at FROM users;"
 
-//See all reports
-//mysql -u root -p chatapp -e "SELECT id, user_id, type, risk_level, created_at FROM reports;"
-
-//See all progress
-//mysql -u root -p chatapp -e "SELECT * FROM progress;"
