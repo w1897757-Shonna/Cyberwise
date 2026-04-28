@@ -1,5 +1,5 @@
 // Pages that don't need a login token — everyone else gets sent to the login page
-fetch("https://your-app-name.onrender.com/api/chat")
+fetch("https://cyberwise-backend.onrender.com/api/chat")
 const PUBLIC_PAGES = ["login.html", "register.html", "forgotpwd.html", "Login.html"];
 const currentPage = window.location.pathname.split("/").pop();
 
@@ -389,7 +389,7 @@ function initProfileForm() {
     const token = localStorage.getItem("cws_token");
     if (token) {
       try {
-        await fetch("http://localhost:5001/api/profile", {
+        await fetch("https://cyberwise-backend.onrender.com/api/profile", {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
