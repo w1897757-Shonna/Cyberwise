@@ -230,7 +230,7 @@ async function initProfileView() {
   const token = localStorage.getItem("cws_token");
   if (token) {
     try {
-      const res = await fetch("http://localhost:5001/api/profile", {
+      const res = await fetch("https://cyberwise-backend.onrender.com/api/profile", {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.ok) {
@@ -442,7 +442,7 @@ function initPasswordForm() {
     }
 
     try {
-      const res = await fetch("http://localhost:5001/api/auth/change-password", {
+      const res = await fetch("https://cyberwise-backend.onrender.com/api/auth/change-password", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -531,7 +531,7 @@ function initChatbot() {
     const token = localStorage.getItem("cws_token");
 
     try {
-      const res = await fetch("http://localhost:5001/api/chat", {
+      const res = await fetch("https://cyberwise-backend.onrender.com/api/chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -595,7 +595,7 @@ function initImageAnalysis() {
     const token = localStorage.getItem("cws_token");
 
     try {
-      const res = await fetch("http://localhost:5001/api/analyze-image", {
+      const res = await fetch("http://https://cyberwise-backend.onrender.com/api/analyze-image", {
         method: "POST",
         headers: {
           ...(token && { Authorization: `Bearer ${token}` })
