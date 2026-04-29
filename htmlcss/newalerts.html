@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en" data-font="md">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scam News | CyberWise Seniors</title>
+  <link rel="icon" type="image/webp" href="./images/logo.png" />
+  <link rel="stylesheet" href="./allpages.css" />
+ 
+  <script defer src="./allpage.js"></script>
+</head>
+<body>
+
+ 
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  
+  <div class="bg-blur" aria-hidden="true"></div>
+
+  <main class="app">
+
+    
+    <aside class="sidebar" aria-label="Primary navigation">
+
+      <div class="side-top">
+
+       
+        <div class="brand">
+          <img src="./images/logo.png" alt="CyberWise Seniors Logo" class="logo"
+            onerror="this.style.display='none';" />
+          <div class="brand-text">
+            <h1>CyberWise</h1>
+            <p>Seniors</p>
+          </div>
+        </div>
+
+       
+        <div class="user-chip">
+          <div class="avatar" aria-hidden="true">👤</div>
+          <div>
+            <div class="user-name" id="userNameSide">User</div>
+            <div class="user-sub muted">Stay safe online</div>
+          </div>
+        </div>
+
+      </div>
+
+      
+      <nav class="nav" aria-label="Pages">
+        <a class="nav-link active" href="dashboard.html">🏠 Dashboard</a>
+        <a class="nav-link" href="newalerts.html">🚩 Scam News Alerts</a>
+        <a class="nav-link" href="modules.html">📘 Modules</a>
+        <a class="nav-link" href="quizzes.html">🧠 Quizzes</a>
+        <a class="nav-link" href="spotscam.html">🕵️ Spot the Scam</a>
+        <a class="nav-link" href="spotaigame.html">🤖 Spot the AI Game</a>
+        <a class="nav-link" href="chatbot.html">💬 Your AI Friend</a>
+        <a class="nav-link" href="progress.html">📊 Progress</a>
+        <a class="nav-link" href="profile.html">👤 Profile</a>
+      </nav>
+
+      
+      <div class="side-bottom">
+        <a class="nav-link logout" href="login.html">🚪 Log out</a>
+      </div>
+
+    </aside>
+
+   
+    <section class="main-area">
+
+     
+      <header class="topbar" role="banner">
+
+        <div class="news-head">
+          <h3>Latest Scam Alerts (Worldwide)</h3>
+          <p class="muted">Updated daily. Click a headline to read the article.</p>
+        </div>
+
+ 
+        <div class="top-actions" aria-label="Accessibility and settings">
+          <div class="a11y-group" role="group" aria-label="Text size controls">
+            <button class="tool-btn" id="decreaseText" type="button">A−</button>
+            <button class="tool-btn" id="increaseText" type="button">A+</button>
+            <button class="tool-btn" id="toggleTheme" type="button" aria-pressed="false">🌙 Dark mode</button>
+          </div>
+        </div>
+
+      </header>
+
+      <!-- news feed — tabindex lets the skip link focus land here -->
+      <main id="main" class="news-shell" tabindex="-1">
+        <section class="news-card" aria-label="Scam news updates">
+
+          <!-- topic picker and manual refresh button -->
+          <div class="news-controls">
+            <label class="muted" for="feedSelect">Choose a topic:</label>
+            <select id="feedSelect">
+              <option value="scam">General scams</option>
+              <option value="phishing">Phishing</option>
+              <option value="fraud">Online fraud</option>
+              <option value="identity">Identity theft</option>
+            </select>
+            <button class="secondary-btn" id="refreshFeed" type="button">Refresh</button>
+          </div>
+
+          <!-- news items get injected here by loadNews() in allpage.js -->
+          <!-- aria-live means screen readers will announce new items automatically -->
+          <div class="news-list" id="newsList" aria-live="polite">
+            <div class="muted">Loading news…</div>
+          </div>
+
+        </section>
+      </main>
+
+      <footer class="footer">
+        <p class="muted">CyberWise Seniors — safe, consent-based learning and scam awareness support.</p>
+      </footer>
+
+    </section>
+  </main>
+
+  <script>
+    // when the user picks a new topic or clicks Refresh, reload the feed
+    document.getElementById("refreshFeed").addEventListener("click", () => {
+      const feedSelect = document.getElementById("feedSelect");
+      const newsList = document.getElementById("newsList");
+
+      // show a loading state while the new articles come in
+      newsList.innerHTML = "<div class='muted'>Loading news…</div>";
+      loadNews(feedSelect.value);
+    });
+  </script>
+
+</body>
+</html>
