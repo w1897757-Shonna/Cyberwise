@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Phone Scams Video | CyberWise Seniors</title>
+  <link rel="icon" type="image/png" href="images/logo.png" />
+  <link rel="stylesheet" href="allpages.css" />
+</head>
+<body>
+  <div class="bg-blur"></div>
+
+  <div class="page">
+
+    <section class="hero-card">
+      <header class="top-bar">
+        <div class="brand">
+          <img src="images/logo.png" class="logo" alt="CyberWise Seniors" onerror="this.style.display='none';">
+          <div class="brand-text">
+            <h1>CyberWise Seniors</h1>
+            <p>Stay safe online</p>
+          </div>
+        </div>
+
+        <div class="tools">
+          <button class="tool-btn" id="decreaseText" type="button">A−</button>
+          <button class="tool-btn" id="increaseText" type="button">A+</button>
+          <button class="tool-btn" id="toggleTheme" type="button" aria-pressed="false">🌙 Dark mode</button>
+          <button class="tool-btn" type="button" onclick="location.href='dashboard.html'">Dashboard</button>
+        </div>
+      </header>
+
+      <div class="header-row">
+        <div>
+          <div class="title">Phone Scams Video</div>
+          <div class="subtitle">
+            Watch this short scenario to understand how phone scams happen and how to stay safe.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <main class="grid">
+      <section class="card">
+        <h2>Watch the video</h2>
+
+        <div class="video-box">
+          <video controls>
+            <source src="images/phonescam.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        </div>
+
+        <div class="callout" style="margin-top:16px;">
+          <strong>Key message:</strong> Never trust unexpected calls asking for money, personal details, or urgent action.
+        </div>
+
+        <h2 style="margin-top:20px;">What you learned</h2>
+        <ul>
+          <li>Scammers may pretend to be from your bank, the police, HMRC, or a delivery company.</li>
+          <li>They often sound urgent and try to make you panic.</li>
+          <li>They may ask for bank details, PINs, passwords, or payment.</li>
+          <li>You should hang up and contact the organisation using an official number.</li>
+        </ul>
+
+        <details style="margin-top:16px;">
+          <summary>Example scam scenario</summary>
+          <p class="small" style="margin-top:10px;">
+            You receive a call from someone claiming to be from your bank. They say there is suspicious activity on your account and ask you to confirm your card number, PIN, or one-time code. This is a scam. A real bank will never ask for your full PIN or password over the phone.
+          </p>
+        </details>
+
+        <details style="margin-top:12px;">
+          <summary>What to do if you get a suspicious call</summary>
+          <ul>
+            <li>Hang up straight away.</li>
+            <li>Do not share personal or banking information.</li>
+            <li>Do not press buttons or follow recorded instructions.</li>
+            <li>Wait a few minutes, then call the organisation back using an official phone number.</li>
+            <li>Tell a trusted family member or friend.</li>
+            <li>Report the scam if needed.</li>
+          </ul>
+        </details>
+
+        <div class="footer-actions">
+          <a href="phonesm.html" class="arrow-btn" aria-label="Go back">
+            <span class="arrow-icon">&#8592;</span>
+            <span class="arrow-label">Back</span>
+          </a>
+
+          <a href="phonequiz.html" class="arrow-btn" aria-label="Go to next page">
+            <span class="arrow-icon">&#8594;</span>
+            <span class="arrow-label">Next</span>
+          </a>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="allpage.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", async () => {
+    await saveProgress({ phone_module: true });
+  });
+</script>
+</body>
+</html> 
