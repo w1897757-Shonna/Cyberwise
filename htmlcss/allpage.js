@@ -1,5 +1,5 @@
 // Pages that don't need a login token — everyone else gets sent to the login page
-fetch("https://cyberwise-backend.onrender.com")
+const API_URL = "https://cyberwise-backend.onrender.com";
 const PUBLIC_PAGES = ["login.html", "register.html", "forgotpwd.html", "Login.html"];
 const currentPage = window.location.pathname.split("/").pop();
 
@@ -299,26 +299,26 @@ async function initProgressView() {
   }
 
   const modules = [
-    { key: "phone_module", label: "📱 Phone Scams" },
-    { key: "doorstep_module", label: "🚪 Doorstep Scams" },
-    { key: "relationship_module", label: "💔 Relationship Scams" },
-    { key: "mail_module", label: "📬 Mail Scams" },
-    { key: "identity_module", label: "🪪 Identity Theft" },
-    { key: "investment_module", label: "💰 Investment & Pension" },
-    { key: "business_module", label: "📧 Business Email" },
-    { key: "textmsg_module", label: "💬 Text Message Scams" },
-    { key: "buying_module", label: "🛍️ Buying & Selling" },
+    { key: "phone_module", label: " Phone Scams" },
+    { key: "doorstep_module", label: "Doorstep Scams" },
+    { key: "relationship_module", label: "Relationship Scams" },
+    { key: "mail_module", label: "Mail Scams" },
+    { key: "identity_module", label: "Identity Theft" },
+    { key: "investment_module", label: " Investment & Pension" },
+    { key: "business_module", label: "Business Email" },
+    { key: "textmsg_module", label: "Text Message Scams" },
+    { key: "buying_module", label: "Buying & Selling" },
   ];
 
   const quizzes = [
-    { key: "phone_quiz", label: "📱 Phone Scams Quiz" },
-    { key: "doorstep_quiz", label: "🚪 Doorstep Scams Quiz" },
-    { key: "relationship_quiz", label: "💔 Relationship Scams Quiz" },
-    { key: "mail_quiz", label: "📬 Mail Scams Quiz" },
-    { key: "identity_quiz", label: "🪪 Identity Theft Quiz" },
-    { key: "business_quiz", label: "📧 Business Email Quiz" },
-    { key: "textmsg_quiz", label: "💬 Text Message Quiz" },
-    { key: "buying_quiz", label: "🛍️ Buying & Selling Quiz" },
+    { key: "phone_quiz", label: " Phone Scams Quiz" },
+    { key: "doorstep_quiz", label: "Doorstep Scams Quiz" },
+    { key: "relationship_quiz", label: " Relationship Scams Quiz" },
+    { key: "mail_quiz", label: "Mail Scams Quiz" },
+    { key: "identity_quiz", label: "Identity Theft Quiz" },
+    { key: "business_quiz", label: " Business Email Quiz" },
+    { key: "textmsg_quiz", label: "Text Message Quiz" },
+    { key: "buying_quiz", label: "Buying & Selling Quiz" },
   ];
 
   const modulesCompleted = modules.filter((m) => progress[m.key]).length;
@@ -595,7 +595,7 @@ function initImageAnalysis() {
     const token = localStorage.getItem("cws_token");
 
     try {
-      const res = await fetch("http://https://cyberwise-backend.onrender.com/api/analyze-image", {
+      const res = await fetch(`${API_URL}/api/analyze-image`, {
         method: "POST",
         headers: {
           ...(token && { Authorization: `Bearer ${token}` })
