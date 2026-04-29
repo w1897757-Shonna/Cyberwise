@@ -84,9 +84,9 @@
     </section>
 
   </div>
-
   <script>
     const API_URL = "https://cyberwise-backend.onrender.com";
+
     const quizData = [
       {
         question: "What is a doorstep scam?",
@@ -173,19 +173,18 @@
     let currentQuestion = 0;
     let score = 0;
     let answered = false;
-    let fontScale = 1;
 
-    const questionText = document.getElementById("questionText");
+    const questionText     = document.getElementById("questionText");
     const optionsContainer = document.getElementById("optionsContainer");
-    const nextBtn = document.getElementById("nextBtn");
-    const feedbackBox = document.getElementById("feedbackBox");
-    const progressText = document.getElementById("progressText");
-    const progressFill = document.getElementById("progressFill");
-    const quizCard = document.getElementById("quizCard");
-    const resultCard = document.getElementById("resultCard");
-    const scoreText = document.getElementById("scoreText");
-    const resultMessage = document.getElementById("resultMessage");
-    const restartBtn = document.getElementById("restartBtn");
+    const nextBtn          = document.getElementById("nextBtn");
+    const feedbackBox      = document.getElementById("feedbackBox");
+    const progressText     = document.getElementById("progressText");
+    const progressFill     = document.getElementById("progressFill");
+    const quizCard         = document.getElementById("quizCard");
+    const resultCard       = document.getElementById("resultCard");
+    const scoreText        = document.getElementById("scoreText");
+    const resultMessage    = document.getElementById("resultMessage");
+    const restartBtn       = document.getElementById("restartBtn");
 
     function loadQuestion() {
       answered = false;
@@ -242,16 +241,17 @@
       nextBtn.style.display = "inline-block";
     }
 
-    nextBtn.addEventListener("click", () => {
+    nextBtn.addEventListener("click", async () => {
       currentQuestion++;
       if (currentQuestion < quizData.length) {
         loadQuestion();
       } else {
-        showResults();
+        await showResults();
       }
     });
 
     async function showResults() {
+      // Hide quiz card and show result card
       quizCard.style.display = "none";
       resultCard.style.display = "block";
       scoreText.textContent = `${score}/${quizData.length}`;
@@ -266,12 +266,16 @@
         resultMessage.textContent = "Keep trying! Review the safety tips and you'll do better next time.";
       }
 
+      // Save quiz completion to backend
       const token = localStorage.getItem("cws_token");
       if (token) {
         try {
           await fetch(`${API_URL}/api/progress`, {
             method: "PUT",
-            headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`
+            },
             body: JSON.stringify({ doorstep_quiz: true, quizScore: score })
           });
         } catch (err) {
@@ -279,6 +283,17 @@
         }
       }
     }
+
+    // Try Again button — resets everything back to the start
+    restartBtn.addEventListener("click", () => {
+      currentQuestion = 0;
+      score = 0;
+      answered = false;
+      resultCard.style.display = "none";
+      quizCard.style.display = "block";
+      loadQuestion();
+    });
+
     loadQuestion();
   </script>
   <script src="allpage.js"></script>

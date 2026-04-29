@@ -98,119 +98,47 @@
 
   <script>
     const API_URL = "https://cyberwise-backend.onrender.com";
+    
     const quizData = [
-      {
-        question: "What is a business email scam?",
-        options: [
-          "A normal business email",
-          "A scam where someone pretends to be a company to trick you into sending money",
-          "A delayed invoice",
-          "A delivery email"
-        ],
-        answer: 1
-      },
-      {
-        question: "What usually happens in a business email scam?",
-        options: [
-          "You receive a genuine receipt",
-          "You get an email asking for payment with changed bank details",
-          "You get a refund",
-          "You get a phone call only"
-        ],
-        answer: 1
-      },
-      {
-        question: "Which of these is a warning sign?",
-        options: [
-          "The company contacts you using official details",
-          "The email address looks slightly different from usual",
-          "The invoice matches your records",
-          "The payment is expected"
-        ],
-        answer: 1
-      },
-      {
-        question: "What should you do if a company changes its bank details?",
-        options: [
-          "Pay immediately",
-          "Ignore it completely",
-          "Check with the company using a trusted phone number",
-          "Reply to the email"
-        ],
-        answer: 2
-      },
-      {
-        question: "Why should you not use the phone number in a suspicious email?",
-        options: [
-          "It may take too long",
-          "It may connect you to the scammer",
-          "It will cost money",
-          "It won’t work"
-        ],
-        answer: 1
-      },
-      {
-        question: "What is the safest action before sending money?",
-        options: [
-          "Send it quickly",
-          "Stop and check the details carefully",
-          "Forward the email",
-          "Delete your account"
-        ],
-        answer: 1
-      },
-      {
-        question: "What should you do if you have already sent money to a scammer?",
-        options: [
-          "Wait a few days",
-          "Send more money",
-          "Contact your bank immediately",
-          "Ignore it"
-        ],
-        answer: 2
-      },
-      {
-        question: "What is the simple rule to stay safe?",
-        options: [
-          "Pay quickly",
-          "Reply first",
-          "Stop, Check, Call, Then Pay",
-          "Delete all emails"
-        ],
-        answer: 2
-      }
+      { question: "What is a business email scam?", options: ["A normal business email","A scam where someone pretends to be a company to trick you into sending money","A delayed invoice","A delivery email"], answer: 1 },
+      { question: "What usually happens in a business email scam?", options: ["You receive a genuine receipt","You get an email asking for payment with changed bank details","You get a refund","You get a phone call only"], answer: 1 },
+      { question: "Which of these is a warning sign?", options: ["The company contacts you using official details","The email address looks slightly different from usual","The invoice matches your records","The payment is expected"], answer: 1 },
+      { question: "What should you do if a company changes its bank details?", options: ["Pay immediately","Ignore it completely","Check with the company using a trusted phone number","Reply to the email"], answer: 2 },
+      { question: "Why should you not use the phone number in a suspicious email?", options: ["It may take too long","It may connect you to the scammer","It will cost money","It won't work"], answer: 1 },
+      { question: "What is the safest action before sending money?", options: ["Send it quickly","Stop and check the details carefully","Forward the email","Delete your account"], answer: 1 },
+      { question: "What should you do if you have already sent money to a scammer?", options: ["Wait a few days","Send more money","Contact your bank immediately","Ignore it"], answer: 2 },
+      { question: "What is the simple rule to stay safe?", options: ["Pay quickly","Reply first","Stop, Check, Call, Then Pay","Delete all emails"], answer: 2 }
     ];
-
+  
     let currentQuestion = 0;
     let score = 0;
     let answered = false;
-    let fontScale = 1;
-
-    const questionText = document.getElementById("questionText");
+  
+    const questionText     = document.getElementById("questionText");
     const optionsContainer = document.getElementById("optionsContainer");
-    const nextBtn = document.getElementById("nextBtn");
-    const feedbackBox = document.getElementById("feedbackBox");
-    const progressText = document.getElementById("progressText");
-    const progressFill = document.getElementById("progressFill");
-    const quizCard = document.getElementById("quizCard");
-    const resultCard = document.getElementById("resultCard");
-    const scoreText = document.getElementById("scoreText");
-    const resultMessage = document.getElementById("resultMessage");
-    const restartBtn = document.getElementById("restartBtn");
-
+    const nextBtn          = document.getElementById("nextBtn");
+    const feedbackBox      = document.getElementById("feedbackBox");
+    const progressText     = document.getElementById("progressText");
+    const progressFill     = document.getElementById("progressFill");
+    const quizCard         = document.getElementById("quizCard");
+    const resultCard       = document.getElementById("resultCard");
+    const scoreText        = document.getElementById("scoreText");
+    const resultMessage    = document.getElementById("resultMessage");
+    const restartBtn       = document.getElementById("restartBtn");
+  
     function loadQuestion() {
       answered = false;
       nextBtn.style.display = "none";
       feedbackBox.style.display = "none";
       feedbackBox.textContent = "";
-
+  
       const q = quizData[currentQuestion];
       questionText.textContent = q.question;
       progressText.textContent = `Question ${currentQuestion + 1} of ${quizData.length}`;
       progressFill.style.width = ((currentQuestion + 1) / quizData.length) * 100 + "%";
-
+  
       optionsContainer.innerHTML = "";
-
+  
       q.options.forEach((opt, i) => {
         const div = document.createElement("div");
         div.className = "option";
@@ -220,88 +148,54 @@
         `;
         optionsContainer.appendChild(div);
       });
-
+  
       document.querySelectorAll('input[name="answer"]').forEach(input => {
         input.addEventListener("change", handleAnswer, { once: true });
       });
     }
-
+  
     function handleAnswer(e) {
       if (answered) return;
       answered = true;
-
+  
       const selected = Number(e.target.value);
       const correct = quizData[currentQuestion].answer;
-
+  
       if (selected === correct) {
         score++;
         feedbackBox.textContent = "Correct! Well done.";
       } else {
         feedbackBox.textContent = "Not quite. Correct answer: " + quizData[currentQuestion].options[correct];
       }
-
+  
       feedbackBox.style.display = "block";
-
+  
       document.querySelectorAll('input[name="answer"]').forEach(input => {
         input.disabled = true;
       });
-
+  
       nextBtn.textContent = currentQuestion === quizData.length - 1
         ? "See Results →"
         : "Next question →";
-
+  
       nextBtn.style.display = "inline-block";
     }
-
+  
     nextBtn.addEventListener("click", async () => {
       currentQuestion++;
-
       if (currentQuestion < quizData.length) {
         loadQuestion();
       } else {
-      async function showResults() {
-  quizCard.style.display = "none";
-  resultCard.style.display = "block";
-  scoreText.textContent = `${score}/${quizData.length}`;
-
-  if (score === quizData.length) {
-    resultMessage.textContent = "Excellent work! You got a perfect score — you really know how to stay safe from business email scams.";
-  } else if (score >= 6) {
-    resultMessage.textContent = "Well done! You have a strong understanding of these scams. Keep it up!";
-  } else if (score >= 4) {
-    resultMessage.textContent = "Good effort! You're getting there — a quick review will help you improve even more.";
-  } else {
-    resultMessage.textContent = "Keep trying! Review the safety tips again and you'll do even better next time.";
-  }
-
-  // Save score to backend
-  const token = localStorage.getItem("cws_token");
-  if (token) {
-    try {
-      await fetch(`${API_URL}/api/progress`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          quizCompleted: true,
-          quizScore: score
-        })
-      });
-    } catch (err) {
-      console.error("Could not save quiz score:", err);
-    }
-  }
-}
+        await showResults();
       }
     });
-
+  
     async function showResults() {
+      // Hide quiz card and show result card
       quizCard.style.display = "none";
       resultCard.style.display = "block";
       scoreText.textContent = `${score}/${quizData.length}`;
-      
+  
       if (score === quizData.length) {
         resultMessage.textContent = "Excellent work! You got a perfect score!";
       } else if (score >= 6) {
@@ -311,20 +205,36 @@
       } else {
         resultMessage.textContent = "Keep trying! Review the safety tips and you'll do better next time.";
       }
+  
+      // Save quiz completion to backend
       const token = localStorage.getItem("cws_token");
       if (token) {
         try {
           await fetch(`${API_URL}/api/progress`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-          body: JSON.stringify({ business_quiz: true, quizScore: score })
-        });
-      } catch (err) { console.error("Could not save quiz score:", err); }
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify({ business_quiz: true, quizScore: score })
+          });
+        } catch (err) {
+          console.error("Could not save quiz score:", err);
+        }
+      }
     }
-  }
-  loadQuestion();
-    
-    
+  
+    // Try Again button — resets everything back to the start
+    restartBtn.addEventListener("click", () => {
+      currentQuestion = 0;
+      score = 0;
+      answered = false;
+      resultCard.style.display = "none";
+      quizCard.style.display = "block";
+      loadQuestion();
+    });
+  
+    loadQuestion();
   </script>
   <script src="allpage.js"></script>
 </body>

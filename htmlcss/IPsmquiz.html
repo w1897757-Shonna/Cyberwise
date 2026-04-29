@@ -68,68 +68,106 @@
     </section>
 
   </div>
-
   <script>
     const API_URL = "https://cyberwise-backend.onrender.com";
     const quizData = [
       {
-        question: "What is an investment or pension scam?",
-        options: ["A free savings account", "A scam that tries to steal your pension or savings using attractive offers", "A normal bank transfer", "A safe government scheme"],
+        question: "What is identity theft?",
+        options: [
+          "Losing your keys",
+          "Someone stealing your personal information and using it for fraud",
+          "Forgetting your password",
+          "Changing your bank account"
+        ],
         answer: 1
       },
       {
-        question: "Which of these is a warning sign of a pension scam?",
-        options: ["An official annual statement you expected", "A cold call about your pension", "A letter from your bank branch", "A savings account you opened yourself"],
+        question: "Which of these is a warning sign of identity theft?",
+        options: [
+          "Receiving your normal bank statement",
+          "Unfamiliar activity or missing money from your bank account",
+          "Getting a birthday card",
+          "Changing your phone wallpaper"
+        ],
         answer: 1
       },
       {
-        question: "Which offer should make you suspicious?",
-        options: ["Being told to take time and get advice", "A low-risk product explained clearly", "Early access to your pension before age 55 for a fee", "A meeting with your own adviser"],
+        question: "What should you do if your bank card is lost or stolen?",
+        options: [
+          "Wait a few days",
+          "Lend it to someone you trust",
+          "Cancel it quickly",
+          "Hide it in a drawer"
+        ],
         answer: 2
       },
       {
-        question: "Which of these investments can be used in scams?",
-        options: ["Wine, jewellery, carbon credits, or land", "Grocery shopping", "Utility bills", "Postage stamps only"],
-        answer: 0
-      },
-      {
-        question: "What should you do if someone pressures you to act quickly?",
-        options: ["Invest straight away", "Stay calm and end the call if needed", "Give them your bank details", "Recruit a friend as well"],
+        question: "Why is two-factor authentication (2FA) useful?",
+        options: [
+          "It makes passwords shorter",
+          "It adds extra security to your accounts",
+          "It removes your PIN",
+          "It stops all junk mail"
+        ],
         answer: 1
       },
       {
-        question: "Why should you be careful with celebrity investment adverts online?",
-        options: ["Celebrities never advertise", "They are always illegal", "Endorsements can be faked by scammers", "They only appear on TV"],
+        question: "What is the safest way to deal with PINs and passwords?",
+        options: [
+          "Share them with friends",
+          "Write them on your bank card",
+          "Keep them private and use strong passwords",
+          "Use the same password for everything"
+        ],
         answer: 2
       },
       {
-        question: "What is a good rule if an offer sounds too good to be true?",
-        options: ["It is probably genuine", "It is probably a scam", "It must be tax-free", "It should be shared online immediately"],
+        question: "What should you do with important papers before throwing them away?",
+        options: [
+          "Put them straight in the bin",
+          "Leave them outside",
+          "Shred them carefully",
+          "Give them to a neighbour"
+        ],
+        answer: 2
+      },
+      {
+        question: "What can help protect your post when you move house?",
+        options: [
+          "Ignore old letters",
+          "Redirect your post",
+          "Throw away all mail",
+          "Change your first name"
+        ],
         answer: 1
       },
       {
-        question: "Who can you contact for independent pension guidance?",
-        options: ["Pension Wise (MoneyHelper)", "A random caller", "Social media support", "Any unknown overseas firm"],
-        answer: 0
+        question: "Which organisation can help with protective registration for credit checks?",
+        options: [
+          "Royal Mail",
+          "Cifas",
+          "DVLA",
+          "NHS"
+        ],
+        answer: 1
       }
     ];
 
     let currentQuestion = 0;
     let score = 0;
     let answered = false;
-    let fontScale = 1;
 
-    const questionText = document.getElementById("questionText");
+    const questionText     = document.getElementById("questionText");
     const optionsContainer = document.getElementById("optionsContainer");
-    const nextBtn = document.getElementById("nextBtn");
-    const feedbackBox = document.getElementById("feedbackBox");
-    const progressText = document.getElementById("progressText");
-    const progressFill = document.getElementById("progressFill");
-    const quizCard = document.getElementById("quizCard");
-    const resultCard = document.getElementById("resultCard");
-    const scoreText = document.getElementById("scoreText");
-    const resultMessage = document.getElementById("resultMessage");
-    const restartBtn = document.getElementById("restartBtn");
+    const nextBtn          = document.getElementById("nextBtn");
+    const feedbackBox      = document.getElementById("feedbackBox");
+    const progressText     = document.getElementById("progressText");
+    const progressFill     = document.getElementById("progressFill");
+    const quizCard         = document.getElementById("quizCard");
+    const resultCard       = document.getElementById("resultCard");
+    const scoreText        = document.getElementById("scoreText");
+    const resultMessage    = document.getElementById("resultMessage");
+    const restartBtn       = document.getElementById("restartBtn");
 
     function loadQuestion() {
       answered = false;
@@ -143,10 +181,14 @@
       progressFill.style.width = ((currentQuestion + 1) / quizData.length) * 100 + "%";
 
       optionsContainer.innerHTML = "";
+
       q.options.forEach((opt, i) => {
         const div = document.createElement("div");
         div.className = "option";
-        div.innerHTML = `<input type="radio" name="answer" id="opt${i}" value="${i}"><label for="opt${i}">${opt}</label>`;
+        div.innerHTML = `
+          <input type="radio" name="answer" id="opt${i}" value="${i}">
+          <label for="opt${i}">${opt}</label>
+        `;
         optionsContainer.appendChild(div);
       });
 
@@ -170,50 +212,73 @@
       }
 
       feedbackBox.style.display = "block";
-      document.querySelectorAll('input[name="answer"]').forEach(input => { input.disabled = true; });
 
-      nextBtn.textContent = currentQuestion === quizData.length - 1 ? "See Results →" : "Next question →";
+      document.querySelectorAll('input[name="answer"]').forEach(input => {
+        input.disabled = true;
+      });
+
+      nextBtn.textContent = currentQuestion === quizData.length - 1
+        ? "See Results →"
+        : "Next question →";
+
       nextBtn.style.display = "inline-block";
     }
 
-    nextBtn.addEventListener("click", () => {
+    nextBtn.addEventListener("click", async () => {
       currentQuestion++;
       if (currentQuestion < quizData.length) {
         loadQuestion();
       } else {
-        showResults();
+        await showResults();
       }
     });
 
-    /* FIX: fetch is now properly inside showResults() */
     async function showResults() {
+      // Hide quiz card and show result card
       quizCard.style.display = "none";
       resultCard.style.display = "block";
       scoreText.textContent = `${score}/${quizData.length}`;
 
       if (score === quizData.length) {
-        resultMessage.textContent = "Excellent work! You got a perfect score — you really know how to stay safe from investment and pension scams.";
+        resultMessage.textContent = "Excellent work! You got a perfect score!";
       } else if (score >= 6) {
-        resultMessage.textContent = "Well done! You have a strong understanding of these scams. Keep it up!";
+        resultMessage.textContent = "Well done! You have a strong understanding. Keep it up!";
       } else if (score >= 4) {
-        resultMessage.textContent = "Good effort! You're getting there — a quick review will help you improve even more.";
+        resultMessage.textContent = "Good effort! A quick review will help you improve.";
       } else {
-        resultMessage.textContent = "Keep trying! Review the safety tips again and you'll do even better next time.";
+        resultMessage.textContent = "Keep trying! Review the safety tips and you'll do better next time.";
       }
 
+      // Save quiz completion to backend
       const token = localStorage.getItem("cws_token");
       if (token) {
         try {
           await fetch(`${API_URL}/api/progress`, {
             method: "PUT",
-            headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-            body: JSON.stringify({ investment_quiz: true, quizScore: score })
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify({ identity_quiz: true, quizScore: score })
           });
-        } catch (err) { console.error("Could not save quiz score:", err); }
+        } catch (err) {
+          console.error("Could not save quiz score:", err);
+        }
       }
     }
+
+    // Try Again button — resets everything back to the start
+    restartBtn.addEventListener("click", () => {
+      currentQuestion = 0;
+      score = 0;
+      answered = false;
+      resultCard.style.display = "none";
+      quizCard.style.display = "block";
+      loadQuestion();
+    });
+
     loadQuestion();
-  </script>
+</script>
   <script src="allpage.js"></script>
 </body>
 </html>
