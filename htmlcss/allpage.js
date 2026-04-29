@@ -1,5 +1,5 @@
 // Pages that don't need a login token — everyone else gets sent to the login page
-fetch("https://cyberwise-backend.onrender.com/api/chat")
+fetch("https://cyberwise-backend.onrender.com")
 const PUBLIC_PAGES = ["login.html", "register.html", "forgotpwd.html", "Login.html"];
 const currentPage = window.location.pathname.split("/").pop();
 
